@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { GenesTable } from "./GenesTable";
-
 import { Layout } from "./Layout";
 import { useState } from "react";
 import { AnalysisCard } from "./AnalysisCard";
@@ -9,72 +7,113 @@ import { AnalysisChart } from "./AnalysisChart";
 import {
   Autocomplete,
   Box,
+  Button,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
+import { useDebounce } from "../hooks/useDebounce";
 
 const Homepage = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["genes"],
+  const [selectedGenes, setSelectedGenes] = useState<string[]>([]);
+  const [geneToAnalyze, setGeneToAnalyze] = useState("");
+  const [input, setInput] = useState("");
+
+  const debouncedSearchValue = useDebounce(input);
+
+  const {
+    data: genesTableData,
+    isLoading: isGenesTableLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["geneDetails"],
+    enabled: false,
+    queryFn: async () => {
+      const apiUrl = new URL("http://localhost:8080/api/genes/gene");
+      selectedGenes.forEach((gene) => apiUrl.searchParams.append("name", gene));
+
+      const data = await fetch(apiUrl);
+      return await data.json();
+    },
+  });
+
+  const { data: geneNames, isLoading: isGeneNamesLoading } = useQuery({
+    queryKey: ["geneNames"],
+    enabled: debouncedSearchValue.length > 2,
     queryFn: async () => {
       const data = await fetch(
-        "http://localhost:8080/api/genes?gene=AK212155&gene=Sp2&gene=Phyh"
+        `http://localhost:8080/api/genes?search=${debouncedSearchValue}`
       );
       return await data.json();
     },
   });
 
-  const [selectedGene, setSelectedGene] = useState<string>("");
-
   const { data: analysisData, isLoading: isAnalysisLoading } = useQuery({
-    queryKey: ["analysis", selectedGene],
-    enabled: !!selectedGene,
+    queryKey: ["analysis", geneToAnalyze],
+    enabled: !!geneToAnalyze,
     queryFn: async () => {
       const data = await fetch(
-        `http://localhost:8080/api/genes/analysis?gene=${selectedGene}`
+        `http://localhost:8080/api/genes/analysis?gene=${geneToAnalyze}`
       );
       return await data.json();
     },
   });
 
   const { data: outliersData, isLoading: isOutliersLoading } = useQuery({
-    queryKey: ["outliers", selectedGene],
-    enabled: !!selectedGene,
+    queryKey: ["outliers", geneToAnalyze],
+    enabled: !!geneToAnalyze,
     queryFn: async () => {
       const data = await fetch(
-        `http://localhost:8080/api/genes/outliers?gene=${selectedGene}`
+        `http://localhost:8080/api/genes/outliers?gene=${geneToAnalyze}`
       );
       return await data.json();
     },
   });
-
-  const top100Films = [
-    { label: "The Shawshank Redemption", year: 1994 },
-    { label: "The Godfather", year: 1972 },
-  ];
 
   return (
     <Layout>
       <Typography paddingBottom={8} fontSize="xxx-large">
         Genes
       </Typography>
-
-      <Autocomplete
-        multiple
-        options={top100Films}
-        renderInput={(params) => <TextField {...params} label="Gene ID" />}
-      />
-
+      <Box display="flex" width="100%" gap={1}>
+        <Autocomplete
+          loading={isGeneNamesLoading}
+          multiple
+          fullWidth
+          noOptionsText="Type to search"
+          inputValue={input}
+          value={selectedGenes}
+          onChange={(_, newValue: string[] | null) => {
+            if (newValue) {
+              setSelectedGenes(newValue);
+              setInput("");
+            }
+          }}
+          onInputChange={(_, newInputValue) => {
+            setInput(newInputValue);
+          }}
+          options={geneNames ?? []}
+          renderInput={(params) => <TextField {...params} label="Gene ID" />}
+        />
+        <Button
+          disabled={selectedGenes.length < 1}
+          variant="outlined"
+          onClick={() => refetch()}
+        >
+          Search
+        </Button>
+      </Box>
       <Box paddingTop={8} display="flex" flexDirection="column" gap={3}>
-        {data?.error ? (
-          <p>{data.error}</p>
+        {genesTableData?.error ? (
+          <p>{genesTableData.error}</p>
         ) : (
-          <GenesTable
-            onAnalyzeClick={(gene) => setSelectedGene(gene)}
-            isLoading={isLoading}
-            genesData={data}
-          />
+          genesTableData && (
+            <GenesTable
+              onAnalyzeClick={(gene) => setGeneToAnalyze(gene)}
+              isLoading={isGenesTableLoading}
+              genesData={genesTableData}
+            />
+          )
         )}
 
         {isAnalysisLoading ? (
@@ -82,7 +121,7 @@ const Homepage = () => {
         ) : (
           analysisData && (
             <AnalysisCard
-              geneName={selectedGene}
+              geneName={geneToAnalyze}
               mean={analysisData.mean}
               median={analysisData.median}
               variance={analysisData.variance}
@@ -95,7 +134,7 @@ const Homepage = () => {
         ) : (
           outliersData && (
             <AnalysisChart
-              geneName={selectedGene}
+              geneName={geneToAnalyze}
               analysisData={outliersData}
             />
           )

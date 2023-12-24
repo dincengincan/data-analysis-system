@@ -2,15 +2,12 @@ import Gene from "../mongodb/models/gene.js";
 
 export const getAnalysis = async (req, res) => {
   try {
-    // Retrieve genes from query parameters (e.g., /genes?gene=AK212155&gene=AnotherGene)
     const targetGene = req.query.gene;
 
-    // Check if the gene is provided in the request
     if (!targetGene) {
       return res.status(400).json({ error: "Gene must be specified." });
     }
 
-    // Use the $match stage to filter documents by the specified gene
     const pipeline = [
       {
         $match: { gene: targetGene },
