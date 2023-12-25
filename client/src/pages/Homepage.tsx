@@ -7,6 +7,7 @@ import { AnalysisChart } from "../components/AnalysisChart";
 import { Box, Typography } from "@mui/material";
 import { SearchField } from "../components/SearchField";
 import { SkeletonLoader } from "../components/SkeletonLoader";
+import { baseApiUrl } from "../api";
 
 const Homepage = () => {
   const [geneToAnalyze, setGeneToAnalyze] = useState("");
@@ -20,7 +21,7 @@ const Homepage = () => {
     queryKey: ["geneDetails"],
     enabled: false,
     queryFn: async () => {
-      const apiUrl = new URL("http://localhost:8080/api/genes/gene");
+      const apiUrl = new URL(`${baseApiUrl}/gene`);
       selectedGenes.forEach((gene) => apiUrl.searchParams.append("name", gene));
 
       const data = await fetch(apiUrl);
@@ -32,9 +33,7 @@ const Homepage = () => {
     queryKey: ["analysis", geneToAnalyze],
     enabled: !!geneToAnalyze,
     queryFn: async () => {
-      const data = await fetch(
-        `http://localhost:8080/api/genes/analysis?gene=${geneToAnalyze}`
-      );
+      const data = await fetch(`${baseApiUrl}/analysis?gene=${geneToAnalyze}`);
       return await data.json();
     },
   });
@@ -43,9 +42,7 @@ const Homepage = () => {
     queryKey: ["outliers", geneToAnalyze],
     enabled: !!geneToAnalyze,
     queryFn: async () => {
-      const data = await fetch(
-        `http://localhost:8080/api/genes/outliers?gene=${geneToAnalyze}`
-      );
+      const data = await fetch(`${baseApiUrl}/outliers?gene=${geneToAnalyze}`);
       return await data.json();
     },
   });
