@@ -1,6 +1,6 @@
 import Gene from "../mongodb/models/gene.js";
 
-export const getGenesByName = async (req, res) => {
+export const getGeneDetailByName = async (req, res) => {
   try {
     const targetGenes = req.query.name;
 
@@ -37,17 +37,19 @@ export const getGenesByName = async (req, res) => {
   }
 };
 
-export const getAllGenes = async (req, res) => {
+export const getAllGeneNames = async (req, res) => {
   try {
     const searchTerm = req.query.search;
 
-    let query = {};
-
-    if (searchTerm) {
-      query = { gene: { $regex: new RegExp(`^${searchTerm}`, "i") } };
+    if (!searchTerm || searchTerm.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "At least one gene must be specified in the request." });
     }
 
-    const result = await Gene.find(query);
+    const result = await Gene.find({
+      gene: { $regex: new RegExp(`^${searchTerm}`, "i") },
+    });
 
     if (result?.length === 0) {
       return res.status(404).json([]);
