@@ -1,7 +1,6 @@
 import {
   Button,
   Paper,
-  Skeleton,
   Table,
   TableBody,
   TableCell,

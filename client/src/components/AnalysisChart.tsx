@@ -1,14 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import {
-  Box,
-  Card,
-  Chip,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Chip, Typography } from "@mui/material";
 
 type AnalysisChartProps = {
   analysisData: AnalysisData[];
