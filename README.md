@@ -1,5 +1,7 @@
 # Omics Data Retrieval and Analysis System
 
+Here is the demo link, you can try it out here: https://data-analysis-system-live.vercel.app/
+
 This is a full-stack application that allows users to retrieve specific omics data, process it, and visualize the results. The project is built using Node.js for the backend, React for the frontend, and MongoDB as the database.
 
 ### Prerequisites
