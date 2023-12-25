@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Homepage from "./components/Homepage";
+import Homepage from "./pages/Homepage";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 

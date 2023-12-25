@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 
 type GenesTableProps = {
-  isLoading: boolean;
   genesData?: Gene[];
   onAnalyzeClick: (gene: string) => void;
 };
@@ -28,11 +27,7 @@ type Gene = {
   exper_rep3: number;
 };
 
-export const GenesTable = ({
-  isLoading,
-  genesData,
-  onAnalyzeClick,
-}: GenesTableProps) => {
+export const GenesTable = ({ genesData, onAnalyzeClick }: GenesTableProps) => {
   const tableContent = (
     <TableContainer component={Paper}>
       <Table padding="normal">
@@ -74,14 +69,6 @@ export const GenesTable = ({
       </Table>
     </TableContainer>
   );
-
-  if (isLoading) {
-    return (
-      <Skeleton height="200px" width="100%">
-        {tableContent}
-      </Skeleton>
-    );
-  }
 
   return tableContent;
 };

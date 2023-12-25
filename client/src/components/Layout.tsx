@@ -5,5 +5,5 @@ type LayoutProps = {
 };
 
 export const Layout = ({ children }: LayoutProps) => {
-  return <Container>{children}</Container>;
+  return <Container maxWidth="lg">{children}</Container>;
 };
