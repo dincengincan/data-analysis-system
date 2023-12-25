@@ -53,7 +53,7 @@ const Homepage = () => {
   return (
     <Layout>
       <Typography paddingTop={10} variant="h3" paddingBottom={8}>
-        Data retrievel system
+        Omics Data Retrieval and Analysis System
       </Typography>
       <Box display="flex" width="100%" gap={1}>
         <SearchField
