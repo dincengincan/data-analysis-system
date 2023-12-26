@@ -1,5 +1,9 @@
 # Omics Data Retrieval and Analysis System
 
+![flow-gif](https://github.com/dincengincan/data-analysis-system/assets/51540754/4f91245d-9f97-44e0-a8e9-67a97f527978)
+
+
+
 Here is the demo link, you can try it out here: https://data-analysis-system-live.vercel.app/
 
 This is a full-stack application that allows users to retrieve specific omics data, process it, and visualize the results. The project is built using Node.js for the backend, React for the frontend, and MongoDB as the database.
