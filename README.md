@@ -1,6 +1,6 @@
 # Omics Data Retrieval and Analysis System
 
-![flow-gif](https://github.com/dincengincan/data-analysis-system/assets/51540754/4f91245d-9f97-44e0-a8e9-67a97f527978)
+![demo](https://github.com/dincengincan/data-analysis-system/assets/51540754/8f8e889e-e97c-43bf-b791-9eb74db7612e)
 
 
 
