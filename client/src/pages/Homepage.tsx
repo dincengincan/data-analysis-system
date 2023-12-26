@@ -80,7 +80,7 @@ const Homepage = () => {
           )}
         </SkeletonLoader>
 
-        <SkeletonLoader isLoading={isOutliersLoading} height={380}>
+        <SkeletonLoader isLoading={isOutliersLoading} height={920}>
           {outliersData && (
             <AnalysisChart
               geneName={geneToAnalyze}
