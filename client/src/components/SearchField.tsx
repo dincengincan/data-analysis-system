@@ -20,7 +20,7 @@ export const SearchField = ({
   const debouncedSearchValue = useDebounce(input);
 
   const { data: geneNames, isLoading: isGeneNamesLoading } = useQuery({
-    queryKey: ["geneNames"],
+    queryKey: ["geneNames", debouncedSearchValue],
     enabled: debouncedSearchValue.length > 2,
     queryFn: async () => {
       const data = await fetch(`${baseApiUrl}?search=${debouncedSearchValue}`);
@@ -34,13 +34,14 @@ export const SearchField = ({
         loading={isGeneNamesLoading}
         multiple
         fullWidth
-        noOptionsText="Type to search"
+        noOptionsText={
+          debouncedSearchValue.length > 2 ? "No result" : "Type to search"
+        }
         inputValue={input}
         value={selectedGenes}
         onChange={(_, newValue: string[] | null) => {
           if (newValue) {
             setSelectedGenes(newValue);
-            setInput("");
           }
         }}
         onInputChange={(_, newInputValue) => {
